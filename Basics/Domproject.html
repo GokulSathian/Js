@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM Project</title>
+</head>
+<body>
+    <p>Youtube Subscribe</p>
+    <button onclick="
+    document.querySelector('button').innerHTML='Subscribed'
+    document.querySelector('.js-hidden-text').innerText= 'Found you';
+    ">Subscribe</button>
+
+    <p class="js-hidden-text"></p>
+
+    <input placeholder="Write a number" class="js-inputvalue" onkeydown="
+    const keypressed = event.key
+    if (keypressed === 'Enter'){
+        calulateTotal();
+    }
+
+    ">
+
+
+    <button onclick ="
+        calulateTotal();
+    ">
+        Calculate
+    </button>
+
+    <p class="js-outputbox"></p>    
+
+    <script>
+        function calulateTotal(){
+            let value = Number(document.querySelector('.js-inputvalue').value)
+            value+=2
+            document.querySelector('.js-outputbox').innerHTML = `${value}`;
+        }
+
+    </script>
+
+
+</body>
+</html>

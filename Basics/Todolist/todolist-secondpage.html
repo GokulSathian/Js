@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Task Details</title>
+
+</head>
+<body>
+    <h1>Task Details</h1>
+    <p id="task-details"></p>
+    <input type="range" id="timer-slider" min="0" max="3600" value="0" oninput="updateSliderValue()" disabled>
+    <p>Timer: <span id="slider-value">0</span> minutes</p>
+
+
+    <button onclick="startTimer()">Start</button>
+    <button onclick="pauseTimer()">Pause</button>
+    <button onclick="resetTimer()">Reset</button>
+
+    <button onclick="goBack()">Back</button>
+
+
+
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const taskId = urlParams.get('task');
+        const todoList = JSON.parse(localStorage.getItem('todoList'))
+        const task = todoList[taskId]
+        let timerInterval
+        console.log('second page',task)
+        document.getElementById('task-details').textContent = task.text;
+        console.log(document.getElementById('timer-slider').value);
+        document.getElementById('timer-slider').value = task.time;
+        document.getElementById('slider-value').textContent = task.time / 60;
+
+
+
+        function updateSliderValue() {
+            const sliderValue = document.getElementById('timer-slider').value;
+            document.getElementById('slider-value').textContent = (sliderValue/60).toFixed(2);
+            task.time = sliderValue; // Store timer value in seconds
+            localStorage.setItem('todoList', JSON.stringify(todoList));
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('timer-slider').disabled = true;
+            timerInterval = setInterval(() => {
+                if (task.time > 0) {
+                    task.time--;
+                    document.getElementById('slider-value').textContent = (task.time / 60).toFixed(2);
+                    document.getElementById('timer-slider').value = task.time;
+                    localStorage.setItem('todoList', JSON.stringify(todoList));
+                } else {
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            localStorage.setItem('todoList', JSON.stringify(todoList));
+            console.log(todoList);
+        }
+
+        function resetTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            task.time = 0;
+            document.getElementById('timer-slider').disabled = false;
+            document.getElementById('timer-slider').value = 0;
+            document.getElementById('slider-value').textContent = 0;
+            localStorage.setItem('todoList', JSON.stringify(todoList));
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+
+
+
+    </script>
+</body>
+</html>
