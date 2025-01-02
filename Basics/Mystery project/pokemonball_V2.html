@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Mystery Pokéball</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game-container">
+    <div id="title">Pokémon Mystery Pokéball</div>
+    <div id="throw-container" class="neon-box">
+      <div id="throw-sign" class="neon-flash">THROW POKÉBALL</div>
+    </div>
+    <div id="animation-container" class="hidden">
+      <div id="pokeball-animation"></div>
+      <div id="pokemon-card" class="hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    const pokemons = {
+      'Common': ['Pidgey', 'Rattata', 'Zubat'],
+      'Rare': ['Pikachu', 'Eevee', 'Vulpix'],
+      'Epic': ['Charizard', 'Blastoise', 'Venusaur'],
+      'Legendary': ['Mewtwo', 'Zapdos', 'Articuno']
+    };
+
+    const rarityChances = {
+      'Common': 70,
+      'Rare': 20,
+      'Epic': 8,
+      'Legendary': 2
+    };
+
+    let currentRarity = null;
+
+    function generatePokeball() {
+      const roll = Math.floor(Math.random() * 100) + 1;
+      if (roll <= rarityChances['Legendary']) return 'Legendary';
+      if (roll <= rarityChances['Legendary'] + rarityChances['Epic']) return 'Epic';
+      if (roll <= rarityChances['Legendary'] + rarityChances['Epic'] + rarityChances['Rare']) return 'Rare';
+      return 'Common';
+    }
+
+    function openPokeball(rarity) {
+      const pokemon = pokemons[rarity][Math.floor(Math.random() * pokemons[rarity].length)];
+      return pokemon;
+    }
+
+    function animatePokeballOpen(rarity, pokemon) {
+      const animation = document.getElementById('pokeball-animation');
+      const card = document.getElementById('pokemon-card');
+      animation.innerHTML = `<div class='pokeball-${rarity.toLowerCase()}'></div>`;
+      animation.classList.remove('hidden');
+
+      setTimeout(() => {
+        card.innerHTML = `<img src='images/${pokemon.toLowerCase()}.png' alt='${pokemon}' class='pokemon-image'>`;
+        card.classList.remove('hidden');
+      }, 2000);
+    }
+
+    document.getElementById('throw-sign').addEventListener('click', () => {
+      const animationContainer = document.getElementById('animation-container');
+      animationContainer.classList.remove('hidden');
+      const pokeballAnimation = document.getElementById('pokeball-animation');
+      pokeballAnimation.innerHTML = '<div class="pokeball-animation"></div>';
+      
+      setTimeout(() => {
+        currentRarity = generatePokeball();
+        const pokemon = openPokeball(currentRarity);
+        animatePokeballOpen(currentRarity, pokemon);
+      }, 1500);
+    });
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    body {
+      font-family: 'Press Start 2P', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #1e1e2f, #3b3b5f);
+      color: #ffffff;
+    }
+
+    #game-container {
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(255, 203, 5, 0.5);
+    }
+
+    #title {
+      font-size: 2rem;
+      color: #ffcb05;
+      text-shadow: 0 0 5px #ffcb05, 0 0 10px #ffcb05, 0 0 15px #ffcb05;
+      margin-bottom: 20px;
+    }
+
+    .neon-box {
+      padding: 20px;
+      border: 3px solid #ffcb05;
+      border-radius: 8px;
+      background: rgba(42, 46, 56, 0.8);
+      box-shadow: 0 0 10px #ffcb05, 0 0 20px #ffcb05;
+    }
+
+    .neon-flash {
+      font-size: 1.5rem;
+      color: #ffcb05;
+      animation: flash 1s infinite;
+      cursor: pointer;
+    }
+
+    @keyframes flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    #animation-container {
+      margin-top: 30px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .pokeball-common, .pokeball-rare, .pokeball-epic, .pokeball-legendary {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, #ff0000 40%, #fff 60%);
+      border-radius: 50%;
+      animation: bounce 1s infinite;
+    }
+
+    .pokemon-image {
+      width: 150px;
+      height: 150px;
+      animation: fadeIn 1.5s;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,12 @@
+.selected {
+    background-color: #d3d3d3; /* Highlight selected task */
+    position: relative;
+}
+.selected::before {
+    content: '▶'; /* Triangle cursor */
+    color: brown;
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+}

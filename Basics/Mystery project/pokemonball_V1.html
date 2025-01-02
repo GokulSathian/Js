@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Mystery Pokéball</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Pokémon Mystery Pokéball 🎮</h1>
+    <div id="pokeball-display">Click "Collect Pokéball" to find one!</div>
+    <div id="pokeball-animation" class="hidden"></div>
+    <button id="collect-btn">Collect Pokéball</button>
+    <button id="open-btn" disabled>Open Pokéball</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const pokemons = {
+      'Common': ['Pidgey', 'Rattata', 'Zubat'],
+      'Rare': ['Pikachu', 'Eevee', 'Vulpix'],
+      'Epic': ['Charizard', 'Blastoise', 'Venusaur'],
+      'Legendary': ['Mewtwo', 'Zapdos', 'Articuno']
+    };
+
+    const rarityChances = {
+      'Common': 70,
+      'Rare': 20,
+      'Epic': 8,
+      'Legendary': 2
+    };
+
+    let currentRarity = null;
+
+    function generatePokeball() {
+      const roll = Math.floor(Math.random() * 100) + 1;
+      if (roll <= rarityChances['Legendary']) return 'Legendary';
+      if (roll <= rarityChances['Legendary'] + rarityChances['Epic']) return 'Epic';
+      if (roll <= rarityChances['Legendary'] + rarityChances['Epic'] + rarityChances['Rare']) return 'Rare';
+      return 'Common';
+    }
+
+    function openPokeball(rarity) {
+      const pokemon = pokemons[rarity][Math.floor(Math.random() * pokemons[rarity].length)];
+      return pokemon;
+    }
+
+    function animatePokeballOpen(rarity, pokemon) {
+      const animation = document.getElementById('pokeball-animation');
+      animation.innerHTML = `<div class='pokeball-${rarity.toLowerCase()}'></div>`;
+      animation.classList.remove('hidden');
+
+      setTimeout(() => {
+        animation.innerHTML = `<div class='pokemon-${rarity.toLowerCase()}'><img src='images/${pokemon.toLowerCase()}.png' alt='${pokemon}'></div>`;
+      }, 2000);
+    }
+
+    document.getElementById('collect-btn').addEventListener('click', () => {
+      currentRarity = generatePokeball();
+      document.getElementById('pokeball-display').textContent = `You found a ${currentRarity} Pokéball! ⚡`;
+      document.getElementById('open-btn').disabled = false;
+      document.getElementById('result').textContent = '';
+    });
+
+    document.getElementById('open-btn').addEventListener('click', () => {
+      if (currentRarity) {
+        const result = openPokeball(currentRarity);
+        animatePokeballOpen(currentRarity, result);
+        document.getElementById('open-btn').disabled = true;
+      }
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: 'Press Start 2P', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #282c34, #3a3f4b);
+      color: #ffffff;
+    }
+
+    #game-container {
+      text-align: center;
+      padding: 20px;
+      border: 2px solid #ffcb05;
+      border-radius: 10px;
+      background: #2a2e38;
+      box-shadow: 0 4px 6px rgba(255, 203, 5, 0.5);
+    }
+
+    h1 {
+      color: #ffcb05;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #ffcb05;
+      color: #282c34;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.1);
+    }
+
+    #pokeball-display, #result {
+      margin: 20px 0;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .pokeball-common, .pokeball-rare, .pokeball-epic, .pokeball-legendary {
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, #ff0000 40%, #fff 60%);
+      border-radius: 50%;
+      margin: 20px auto;
+      animation: bounce 2s infinite;
+    }
+
+    .pokemon-common img, .pokemon-rare img, .pokemon-epic img, .pokemon-legendary img {
+      width: 100px;
+      height: 100px;
+      margin-top: 20px;
+      animation: fadeIn 1.5s;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+</body>
+</html>

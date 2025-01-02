@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystery Egg Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Mystery Egg Hatchery 🥚</h1>
+    <div id="egg-display">Click "Collect Egg" to find one!</div>
+    <button id="collect-btn">Collect Egg</button>
+    <button id="hatch-btn" disabled>Hatch Egg</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const creatures = {
+      'Common': ['Chick', 'Sparrow', 'Parrot'],
+      'Rare': ['Phoenix', 'Owl', 'Peacock'],
+      'Epic': ['Griffin', 'Thunderbird'],
+      'Legendary': ['Dragon', 'Unicorn', 'Wyvern']
+    };
+
+    const rarityChances = {
+      'Common': 70,
+      'Rare': 20,
+      'Epic': 8,
+      'Legendary': 2
+    };
+
+    let currentRarity = null;
+
+    function generateEgg() {
+      const roll = Math.floor(Math.random() * 100) + 1;
+      if (roll <= rarityChances['Legendary']) return 'Legendary';
+      if (roll <= rarityChances['Legendary'] + rarityChances['Epic']) return 'Epic';
+      if (roll <= rarityChances['Legendary'] + rarityChances['Epic'] + rarityChances['Rare']) return 'Rare';
+      return 'Common';
+    }
+
+    function hatchEgg(rarity) {
+      const creature = creatures[rarity][Math.floor(Math.random() * creatures[rarity].length)];
+      return creature;
+    }
+
+    document.getElementById('collect-btn').addEventListener('click', () => {
+      currentRarity = generateEgg();
+      document.getElementById('egg-display').textContent = `You found a ${currentRarity} egg! 🥚`;
+      document.getElementById('hatch-btn').disabled = false;
+      document.getElementById('result').textContent = '';
+    });
+
+    document.getElementById('hatch-btn').addEventListener('click', () => {
+      if (currentRarity) {
+        const result = hatchEgg(currentRarity);
+        document.getElementById('result').textContent = `🎉 A ${result} has hatched! 🎉`;
+        document.getElementById('hatch-btn').disabled = true;
+      }
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    }
+
+    #game-container {
+      text-align: center;
+      padding: 20px;
+      border: 2px solid #fff;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    #egg-display, #result {
+      margin: 20px 0;
+      font-size: 18px;
+    }
+  </style>
+</body>
+</html>

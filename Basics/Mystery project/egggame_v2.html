@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystery Egg Hatchery</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Mystery Egg Hatchery 🥚</h1>
+    <div id="egg-display">Click "Collect Egg" to find one!</div>
+    <div id="egg-animation" class="hidden"></div>
+    <button id="collect-btn">Collect Egg</button>
+    <button id="hatch-btn" disabled>Hatch Egg</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const creatures = {
+      'Common': ['Chick', 'Sparrow', 'Parrot'],
+      'Rare': ['Phoenix', 'Owl', 'Peacock'],
+      'Epic': ['Griffin', 'Thunderbird'],
+      'Legendary': ['Dragon', 'Unicorn', 'Wyvern']
+    };
+
+    const rarityChances = {
+      'Common': 70,
+      'Rare': 20,
+      'Epic': 8,
+      'Legendary': 2
+    };
+
+    let currentRarity = null;
+
+    function generateEgg() {
+      const roll = Math.floor(Math.random() * 100) + 1;
+      if (roll <= rarityChances['Legendary']) return 'Legendary';
+      if (roll <= rarityChances['Legendary'] + rarityChances['Epic']) return 'Epic';
+      if (roll <= rarityChances['Legendary'] + rarityChances['Epic'] + rarityChances['Rare']) return 'Rare';
+      return 'Common';
+    }
+
+    function hatchEgg(rarity) {
+      const creature = creatures[rarity][Math.floor(Math.random() * creatures[rarity].length)];
+      return creature;
+    }
+
+    function animateEggHatch(rarity, creature) {
+      const eggAnimation = document.getElementById('egg-animation');
+      eggAnimation.innerHTML = `<div class='egg-${rarity.toLowerCase()}'></div>`;
+      eggAnimation.classList.remove('hidden');
+
+      setTimeout(() => {
+        eggAnimation.innerHTML = `<div class='creature-${rarity.toLowerCase()}'>${creature}</div>`;
+      }, 2000);
+    }
+
+    document.getElementById('collect-btn').addEventListener('click', () => {
+      currentRarity = generateEgg();
+      document.getElementById('egg-display').textContent = `You found a ${currentRarity} egg! 🥚`;
+      document.getElementById('hatch-btn').disabled = false;
+      document.getElementById('result').textContent = '';
+    });
+
+    document.getElementById('hatch-btn').addEventListener('click', () => {
+      if (currentRarity) {
+        const result = hatchEgg(currentRarity);
+        animateEggHatch(currentRarity, result);
+        document.getElementById('hatch-btn').disabled = true;
+      }
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+      color: #ffffff;
+    }
+
+    #game-container {
+      text-align: center;
+      padding: 20px;
+      border: 2px solid #00ffea;
+      border-radius: 10px;
+      background: #1e1e2e;
+      box-shadow: 0 4px 6px rgba(0, 255, 234, 0.5);
+    }
+
+    h1 {
+      color: #00ffea;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #00ffea;
+      color: #1a1a1a;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.1);
+    }
+
+    #egg-display, #result {
+      margin: 20px 0;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .egg-common, .egg-rare, .egg-epic, .egg-legendary {
+      width: 50px;
+      height: 70px;
+      background: radial-gradient(circle, #fff 40%, #ccc);
+      border-radius: 50%;
+      margin: 20px auto;
+      animation: bounce 2s infinite;
+    }
+
+    .creature-common, .creature-rare, .creature-epic, .creature-legendary {
+      font-size: 20px;
+      margin-top: 20px;
+      animation: fadeIn 1.5s;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+</body>
+</html>
